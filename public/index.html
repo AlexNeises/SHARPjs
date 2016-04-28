@@ -20,7 +20,7 @@
 			margin-bottom: 30px;
 		}
 	</style>
-	<!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> -->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
 	
 	<script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
@@ -35,8 +35,21 @@
 	<script>
 		var map = new Datamap({
 			element: document.getElementById('container'),
+			geographyConfig: {
+            	highlightOnHover: false,
+            	popupOnHover: false
+        	},
 			responsive: true,
-			scope: "usa"
+			scope: "usa",
+			fills: {
+				'RED': '#127073',
+				defaultFill: '#95A863'
+			}
+		});
+
+		$.getJSON('/sources/nam.json', function(json) {
+			var nam = json;
+			map.bubbles(nam);
 		});
 	</script>
 <!-- <body ng-controller="mainController">

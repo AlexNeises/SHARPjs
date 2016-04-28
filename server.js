@@ -11,6 +11,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/sharpjs');
 
 app.use(express.static(__dirname + '/public'));
 app.use('/bower_components', express.static(__dirname + '/bower_components'));
+app.use('/sources', express.static(__dirname + '/sources'));
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({'extended': 'true'}));
 app.use(bodyParser.json());
