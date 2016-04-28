@@ -30,7 +30,7 @@
 	<script src="core.js"></script>
 </head>
 
-<body>
+<body ng-controller="mainController">
 	<div id="container" style="position: relative; width: 75%;"></div>
 	<script>
 		var map = new Datamap({
@@ -51,6 +51,52 @@
 			var nam = json;
 			map.bubbles(nam);
 		});
+
+		var cache_len = new Date(new Date().getTime() - 30000).getTime();
+
+var spc_base_url = "http://www.spc.noaa.gov/exper/soundings/";
+var spc_text = "";
+var spc_time = null;
+
+function createCORSRequest(method, url) {
+	var xhr = new XMLHttpRequest();
+	if ("withCredentials" in xhr) {
+		xhr.open(method, url, true);
+	}
+	else if (typeof XDomainRequest != "undefined") {
+		xhr = new XDomainRequest();
+		xhr.open(method, url);
+	}
+	else {
+		xhr = null;
+	}
+	return xhr;
+}
+
+function _download_spc() {
+	var now = new Date().getTime();
+	if (spc_time == null || spc_time < now - cache_len) {
+		var xhr = createCORSRequest('GET', spc_base_url);
+		xhr.setRequestHeader(
+			'Access-Control-Allow-Origin', 'http://localhost:8080'
+		);
+		console.log(xhr);
+		if (!xhr) {
+			console.log('CORS not supported');
+			return;
+		}
+		xhr.onload = function() {
+			var text = xhr.responseText;
+			console.log(text);
+		}
+		xhr.onerror = function() {
+			console.log('There was an error making the request.');
+		};
+		xhr.send();
+
+		spc_time = new Date().getTime();
+	}
+}
 	</script>
 <!-- <body ng-controller="mainController">
 	<div class="container">

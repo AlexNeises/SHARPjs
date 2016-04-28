@@ -3,9 +3,9 @@ var scotchTodo = angular.module('scotchTodo', []);
 function mainController($scope, $http) {
 	$scope.formData = {};
 
-	$http.get('/api/v1/todos')
+	$http.get('/api/v1/sources/download_spc')
 		.success(function(data) {
-			$scope.todos = data;
+			$scope.spc_data = data;
 			console.log(data);
 		})
 		.error(function(data) {
