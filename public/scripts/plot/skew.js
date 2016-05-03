@@ -69,7 +69,8 @@ function draw_graph() {
 	var d_theta = math.range(bltmpc, 80, 20);
 	var t_isoth = math.range(bltmpc - 100, brtmpc + dt, dt);
 	var t_isotx = math.range(bltmpc, brtmpc + dt, dt);
-	var p_isoba = [1000, 850, 700, 500, 300, 200, 100];
+	var p_isob1 = [1000, 850, 700, 500, 300, 200, 100];
+	var p_isob2 = math.range(parseInt(pmax), parseInt(pmin - 50), -50);
 	var r_mixin = math.range(4, 33, 4);
 
 	t_isoth.forEach(function(value) {
@@ -97,10 +98,10 @@ function draw_graph() {
 		}
 	});
 
-	p_isoba.forEach(function(value) {
-		var isobar_values = draw_isobar(value, 1);
+	p_isob1.forEach(function(value) {
+		var isobar_values = draw_isobar(value);
 		var newpath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-		newpath.setAttribute("d", "M " + lpad + " " + isobar_values[0] + " L " + brx + " " + isobar_values[0]);
+		newpath.setAttribute("d", "M " + lpad + " " + isobar_values + " L " + brx + " " + isobar_values);
 		newpath.setAttribute("clip-path", "url(#plot-clip)");
 		newpath.style.stroke = DBROWN;
 		newpath.style.strokeWidth = "1px";
@@ -109,7 +110,7 @@ function draw_graph() {
 
 		var newrect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
 		newrect.setAttribute("x", 1);
-		newrect.setAttribute("y", isobar_values[0] - 8);
+		newrect.setAttribute("y", isobar_values - 8);
 		newrect.setAttribute("width", 35);
 		newrect.setAttribute("height", 20);
 		newrect.style.stroke = WHITE;
@@ -118,10 +119,30 @@ function draw_graph() {
 		svg.appendChild(newrect);
 
 		var newtext = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-		newtext.setAttribute("x", 1);
-		newtext.setAttribute("y", isobar_values[0] + 5);
+		newtext.setAttribute("x", 30);
+		newtext.setAttribute("y", isobar_values + 5);
+		newtext.setAttribute("text-anchor", "end");
 		newtext.textContent = value;
 		svg.appendChild(newtext);
+	});
+
+	p_isob2.forEach(function(value) {
+		var isobar_values = draw_isobar(value);
+		if (isobar_values) {
+			var newpath1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+			newpath1.setAttribute("d", "M " + Number(lpad + 15) + " " + isobar_values + " L " + Number(lpad + 5) + " " + isobar_values);
+			newpath1.style.stroke = DBROWN;
+			newpath1.style.strokeWidth = "1px";
+			newpath1.style.fill = "none";
+			svg.appendChild(newpath1);
+
+			var newpath2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+			newpath2.setAttribute("d", "M " + Number(brx + rpad - 60) + " " + isobar_values + " L " + Number(brx + rpad - 50) + " " + isobar_values);
+			newpath2.style.stroke = DBROWN;
+			newpath2.style.strokeWidth = "1px";
+			newpath2.style.fill = "none";
+			svg.appendChild(newpath2);
+		}
 	});
 
 	t_isotx.forEach(function(value) {
@@ -232,14 +253,11 @@ function draw_graph() {
 		return results;
 	}
 
-	function draw_isobar(p, flag) {
-		var y1 = originy + pres_to_pix(p) / scale;
-		var results = [];
+	function draw_isobar(p) {
+		var y1 = Number(originy + pres_to_pix(p) / scale);
+		var results;
 		if (y1 >= tpad && y1 <= hgt) {
-			var offset = 5;
-			if (flag) {
-				results.push(y1);
-			}
+			results = y1;
 		}
 		return results;
 	}
@@ -272,5 +290,4 @@ function draw_graph() {
 		var scl1 = brtmpc - (((bry - pres_to_pix(p)) / (bry - tpad)) * yrange);
 		return brx - (((scl1 - t) / xrange) * (brx - lpad));
 	}
-	return draw_dry_adiabat(1);
 };
