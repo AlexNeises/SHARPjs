@@ -6,6 +6,7 @@ var morgan			= require('morgan');
 var bodyParser		= require('body-parser');
 var methodOverride	= require('method-override');
 var $http			= require('http');
+var math			= require('mathjs');
 
 // Configuration ===================
 mongoose.connect('mongodb://127.0.0.1:27017/sharpjs');
@@ -75,6 +76,11 @@ app.get('/api/v1/sources/download_spc', function(req, res) {
 	}
 });
 
+// app.get('/api/v1/plot', function(req, res) {
+// 	var response = draw_graph();
+// 	res.json(response);
+// });
+
 app.post('/api/v1/todos', function(req, res) {
 	Todo.create({
 		text: req.body.text,
@@ -108,9 +114,12 @@ app.delete('/api/v1/todos/:todo_id', function(req, res) {
 	});
 });
 
+// Various Functions ===============
+
+
 // Application =====================
-app.get('*', function(req, res) {
-	res.sendFile(__dirname + '/public/index.html');
+app.get('/plot', function(req, res) {
+	res.sendFile(__dirname + '/public/skewt.html');
 });
 
 // Listen (node server.js) =========

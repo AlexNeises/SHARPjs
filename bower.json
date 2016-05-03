@@ -19,6 +19,9 @@
     "tests"
   ],
   "dependencies": {
-    "datamaps": "^0.5.1"
+    "datamaps": "^0.5.1",
+    "jquery": "^2.2.3",
+    "angular": "~1.0.8",
+    "mathjs": "^3.2.1"
   }
 }

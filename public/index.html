@@ -25,11 +25,11 @@
 			height: 600px;
 		}
 	</style>
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
+	<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+	<script src="/bower_components/angular/angular.min.js"></script>
 	
-	<script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
+	<script src="/bower_components/d3/d3.min.js"></script>
+	<script src="/bower_components/topojson/topojson.js"></script>
 	<script src="/bower_components/datamaps/dist/datamaps.all.hires.min.js"></script>
 	<script src="core.js"></script>
 </head>
@@ -43,6 +43,7 @@
 		<div class="col-sm-4">
 			<a href="#" id="world" class="btn btn-primary">World</a>
 			<a href="#" id="usa" class="btn btn-primary">United States</a>
+			<a href="#" id="europe" class="btn btn-primary">Europe</a>
 		</div>
 	</div>
 	<div class="row">
@@ -273,17 +274,34 @@ function Datamap(scope) {
 				'ORANGE': '#123456',
 				defaultFill: '#95A863'
 			},
-			// setProjection: function(element) {
-			// 	var projection = d3.geo.equirectangular()
-			// 	.center([-85, 25])
-			// 	.rotate([4.4, 0])
-			// 	.scale(400)
-			// 	.translate([element.offsetWidth / 2, element.offsetHeight / 2]);
-			// 	var path = d3.geo.path()
-			// 	.projection(projection);
+			done: this._handleMapReady.bind(this)
+		});
+	}
+	if (scope == 'europe') {
+		this.instance = new Datamaps({
+			scope: 'world',
+			element: this.$container.get(0),
+			projection: 'mercator',
+			geographyConfig: {
+				highlightOnHover: false,
+				popupOnHover: false
+			},
+			fills: {
+				'RED': '#127073',
+				'ORANGE': '#123456',
+				defaultFill: '#95A863'
+			},
+			setProjection: function(element) {
+				var projection = d3.geo.mercator()
+				.center([21, 50])
+				.rotate([0, 0])
+				.scale(700)
+				.translate([element.offsetWidth / 2, element.offsetHeight / 2]);
+				var path = d3.geo.path()
+				.projection(projection);
 
-			// 	return {path: path, projection: projection};
-			// },
+				return {path: path, projection: projection};
+			},
 			done: this._handleMapReady.bind(this)
 		});
 	}
@@ -307,6 +325,12 @@ $('#usa').on('click', function() {
 	$("#container").parent().append("<div id='container' />");
 	$("#container").remove();
 	data_map = new Datamap('usa');
+});
+
+$('#europe').on('click', function() {
+	$("#container").parent().append("<div id='container' />");
+	$("#container").remove();
+	data_map = new Datamap('europe');
 });
 
 $('#world').on('click', function() {
